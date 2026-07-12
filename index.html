@@ -99,7 +99,7 @@ nav{
 @media(max-width:860px){.nav-links{display:none;}}
 
 /* Hero */
-.hero{min-height:100vh;display:flex;align-items:center;padding-top:140px;padding-bottom:60px;}
+.hero{min-height:100vh;min-height:100svh;display:flex;align-items:center;padding-top:140px;padding-bottom:60px;}
 .hero-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:40px;align-items:center;}
 .hero-tag{
   display:inline-flex;align-items:center;gap:8px;
@@ -129,12 +129,12 @@ nav{
 .hstat .lbl{font-size:11.5px;color:var(--text-dimmer);margin-top:4px;line-height:1.3;}
 
 /* Orbit visual */
-.orbit-wrap{position:relative;height:520px;display:flex;align-items:center;justify-content:center;}
+.orbit-wrap{position:relative;height:520px;width:100%;display:flex;align-items:center;justify-content:center;overflow:hidden;}
 .orbit-ring{position:absolute;border:1px solid var(--border);border-radius:50%;}
-.orbit-ring.r1{width:230px;height:230px;}
-.orbit-ring.r2{width:380px;height:380px;border-style:dashed;border-color:rgba(146,163,214,.1);}
+.orbit-ring.r1{width:min(230px,58vw);height:min(230px,58vw);}
+.orbit-ring.r2{width:min(380px,92vw);height:min(380px,92vw);border-style:dashed;border-color:rgba(146,163,214,.1);}
 .orbit-core{
-  position:relative;z-index:3;width:132px;height:132px;border-radius:50%;
+  position:relative;z-index:3;width:min(132px,34vw);height:min(132px,34vw);border-radius:50%;
   background:radial-gradient(circle at 35% 30%, #2A3560, #0F1424 70%);
   border:1px solid var(--border-strong);
   display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;
@@ -143,11 +143,11 @@ nav{
 .orbit-core span{font-family:var(--font-mono);}
 .orbit-core .k1{font-size:10px;letter-spacing:.1em;color:var(--text-dimmer);}
 .orbit-core .k2{font-size:16px;font-weight:700;color:#fff;}
-.orbit-core .k3{font-size:9.5px;color:var(--blue-soft);margin-top:3px;}
-.orbit-spin{position:absolute;width:380px;height:380px;animation:spin 34s linear infinite;}
+.orbit-core .k3{font-size:9.5px;color:var(--blue-soft);margin-top:3px;text-align:center;padding:0 6px;}
+.orbit-spin{position:absolute;width:min(380px,92vw);height:min(380px,92vw);animation:spin 34s linear infinite;}
 .orbit-node{
-  position:absolute;width:86px;height:86px;left:50%;top:50%;
-  margin-left:-43px;margin-top:-43px;
+  position:absolute;width:min(86px,22vw);height:min(86px,22vw);left:50%;top:50%;
+  margin-left:calc(min(86px,22vw) / -2);margin-top:calc(min(86px,22vw) / -2);
   display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;
   background:var(--bg-panel-2);border:1px solid var(--border-strong);border-radius:16px;
   animation:counterspin 34s linear infinite;
@@ -389,11 +389,28 @@ footer{border-top:1px solid var(--border);padding:50px 0;}
 /* mobile */
 @media(max-width:960px){
   .hero-grid{grid-template-columns:1fr;}
-  .orbit-wrap{height:380px;order:-1;}
-  .pain-grid,.gap-grid,.adv-grid,.pricing-grid,.ltv-grid,.prod-grid,.case-grid,.chart-grid,.trac-stats,.val-wrap,.usp-grid,.sol-wrap,.gtm-wrap,.tsom-wrap{grid-template-columns:1fr;}
+  .orbit-wrap{height:min(380px,92vw);order:-1;}
+  .pain-grid,.gap-grid,.adv-grid,.pricing-grid,.ltv-grid,.prod-grid,.case-grid,.chart-grid,.trac-stats,.val-wrap,.usp-grid,.sol-wrap,.gtm-wrap,.tsom-wrap,.kpi-row{grid-template-columns:1fr;}
   .hero-stats{grid-template-columns:repeat(2,1fr);row-gap:20px;}
   section{padding:70px 0;}
   .wrap{padding:0 20px;}
+  .usp-hero{padding:32px 22px;}
+  .val-formula{padding:26px 20px;}
+  .breakeven-card{flex-direction:column;text-align:center;gap:14px;padding:26px 22px;}
+}
+
+@media(max-width:520px){
+  .hero{padding-top:120px;}
+  .hero h1{font-size:clamp(30px,9vw,40px);}
+  .hero-cta{flex-direction:column;align-items:stretch;}
+  .hero-cta .btn{justify-content:center;}
+  .hero-stats{grid-template-columns:repeat(2,1fr);}
+  .nav-cta{padding:8px 14px;font-size:12.5px;}
+  .brand{font-size:16px;}
+  .val-formula .vf-eq{font-size:13px;gap:8px;}
+  .val-formula .vf-result{font-size:30px;}
+  .cta-buttons{flex-direction:column;align-items:stretch;}
+  .cta-buttons .btn{justify-content:center;}
 }
 </style>
 </head>
@@ -949,6 +966,9 @@ footer{border-top:1px solid var(--border);padding:50px 0;}
 
 <script>
 gsap.registerPlugin(ScrollTrigger);
+// avoid re-triggering/jumping layout when the mobile browser address bar
+// shows/hides (which fires resize/height-change events on scroll)
+ScrollTrigger.config({ ignoreMobileResize: true });
 
 // scroll reveals
 document.querySelectorAll('.reveal').forEach((el,i)=>{
@@ -983,16 +1003,31 @@ const nodes = [
   {label:'NAWAUP', icon:'<circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>'},
 ];
 const spin = document.getElementById('orbitSpin');
-const R = 190;
+const nodeEls = [];
 nodes.forEach((n,i)=>{
-  const angle = (i / nodes.length) * Math.PI * 2 - Math.PI/2;
-  const x = Math.cos(angle) * R;
-  const y = Math.sin(angle) * R;
   const div = document.createElement('div');
   div.className = 'orbit-node';
-  div.style.transform = `translate(${x}px, ${y}px)`;
   div.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round">${n.icon}</svg><span class="n-lbl">${n.label}</span>`;
   spin.appendChild(div);
+  nodeEls.push(div);
+});
+
+function placeOrbitNodes(){
+  // radius based on the actual rendered size of the spin ring, so it
+  // never overflows narrow phone screens
+  const R = spin.offsetWidth / 2;
+  nodeEls.forEach((div,i)=>{
+    const angle = (i / nodeEls.length) * Math.PI * 2 - Math.PI/2;
+    const x = Math.cos(angle) * R;
+    const y = Math.sin(angle) * R;
+    div.style.transform = `translate(${x}px, ${y}px)`;
+  });
+}
+placeOrbitNodes();
+let orbitResizeTimer;
+window.addEventListener('resize', ()=>{
+  clearTimeout(orbitResizeTimer);
+  orbitResizeTimer = setTimeout(placeOrbitNodes, 150);
 });
 
 // charts
