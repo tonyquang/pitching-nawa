@@ -160,13 +160,39 @@ nav{
 @keyframes counterspin{from{transform:rotate(0deg);}to{transform:rotate(-360deg);}}
 .orbit-particle{position:absolute;width:4px;height:4px;border-radius:50%;background:var(--blue-soft);opacity:.7;}
 
-/* disclaimer strip */
-.disclaimer{
-  border:1px solid rgba(255,194,75,.25);background:var(--amber-dim);
-  border-radius:14px;padding:16px 20px;font-size:13px;color:#D9C08A;
-  display:flex;gap:12px;align-items:flex-start;margin-top:64px;
+/* eco ecosystem banner (replaces old disclaimer strip) */
+.eco-banner{margin-top:56px;display:flex;flex-direction:column;align-items:center;text-align:center;}
+.eco-orbit{height:300px;width:100%;max-width:460px;margin:0 auto;}
+.eco-orbit .orbit-ring.r1{width:min(180px,52vw);height:min(180px,52vw);animation:eco-pulse-ring 3.2s ease-in-out infinite;}
+.eco-orbit .orbit-ring.r2{width:min(300px,88vw);height:min(300px,88vw);}
+.eco-orbit .orbit-spin{width:min(300px,88vw);height:min(300px,88vw);}
+.eco-orbit .orbit-node{width:min(70px,19vw);height:min(70px,19vw);margin-left:calc(min(70px,19vw) / -2);margin-top:calc(min(70px,19vw) / -2);}
+.eco-core{
+  width:min(112px,30vw);height:min(112px,30vw);
+  animation:eco-core-glow 3.2s ease-in-out infinite;
 }
-.disclaimer svg{flex:none;width:18px;height:18px;stroke:var(--amber);margin-top:1px;}
+.eco-core .k2{font-size:12.5px;letter-spacing:-.01em;}
+.eco-core .k3{font-size:8.5px;}
+@keyframes eco-core-glow{
+  0%,100%{box-shadow:0 0 40px -8px rgba(91,140,255,.45), inset 0 0 24px rgba(91,140,255,.08);}
+  50%{box-shadow:0 0 68px -6px rgba(91,140,255,.75), inset 0 0 30px rgba(91,140,255,.15);}
+}
+@keyframes eco-pulse-ring{
+  0%,100%{opacity:.55;transform:scale(1);}
+  50%{opacity:1;transform:scale(1.04);}
+}
+.eco-line-layer{position:absolute;inset:0;pointer-events:none;z-index:1;}
+.eco-line-layer svg{width:100%;height:100%;overflow:visible;}
+.eco-line-layer path{
+  fill:none;stroke:url(#ecoLineGrad);stroke-width:1.4;
+  stroke-dasharray:4 6;animation:eco-flow 1.4s linear infinite;
+}
+@keyframes eco-flow{to{stroke-dashoffset:-20;}}
+.eco-caption{margin-top:8px;font-size:13.5px;color:var(--text-dim);max-width:520px;}
+.eco-caption b{color:var(--blue-soft);font-weight:600;}
+@media(max-width:960px){
+  .eco-orbit{height:min(300px,88vw);}
+}
 
 /* Cards generic */
 .card{
@@ -461,12 +487,40 @@ footer{border-top:1px solid var(--border);padding:50px 0;}
     </div>
   </div>
   <div class="wrap">
-    <div class="disclaimer">
-      <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-      <div>Toàn bộ số liệu tài chính, tăng trưởng và định giá trong trang này là <b style="color:#EAD9A0">ví dụ minh hoạ</b>, xây dựng theo mô hình SaaS đa sản phẩm hợp lý dựa trên thông tin công khai trên nawasoft.vn. Trước khi dùng gọi vốn thật, cần thay bằng số liệu tài chính đã kiểm toán/soát xét.</div>
+    <div class="eco-banner reveal">
+      <div class="orbit-wrap eco-orbit" id="orbitWrapEco">
+        <div class="orbit-ring r1"></div>
+        <div class="orbit-ring r2"></div>
+        <div class="orbit-core eco-core">
+          <span class="k1">CORE</span>
+          <span class="k2">NAWASOFT OS</span>
+          <span class="k3">1 hạt nhân dữ liệu AI</span>
+        </div>
+        <div class="orbit-spin" id="orbitSpinEco">
+          <div class="eco-line-layer">
+            <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <linearGradient id="ecoLineGrad" x1="0" y1="0" x2="1" y2="1">
+                  <stop offset="0%" stop-color="#5B8CFF" stop-opacity="0"/>
+                  <stop offset="55%" stop-color="#5B8CFF" stop-opacity=".8"/>
+                  <stop offset="100%" stop-color="#8FADFF" stop-opacity="0"/>
+                </linearGradient>
+              </defs>
+              <path d="M50,50 L50,10" style="animation-delay:0s"/>
+              <path d="M50,50 L84.64,30" style="animation-delay:.25s"/>
+              <path d="M50,50 L84.64,70" style="animation-delay:.5s"/>
+              <path d="M50,50 L50,90" style="animation-delay:.75s"/>
+              <path d="M50,50 L15.36,70" style="animation-delay:1s"/>
+              <path d="M50,50 L15.36,30" style="animation-delay:1.25s"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+      <p class="eco-caption">6 sản phẩm vệ tinh vận hành quanh <b>một hạt nhân dữ liệu AI duy nhất</b> — đồng bộ khách hàng, nội dung &amp; chiến dịch trên mọi kênh.</p>
     </div>
   </div>
 </header>
+
 
 <div class="wrap"><div class="divider"></div></div>
 
@@ -1002,32 +1056,36 @@ const nodes = [
   {label:'MAP', icon:'<path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0Z"/><circle cx="12" cy="10" r="3"/>'},
   {label:'NAWAUP', icon:'<circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>'},
 ];
-const spin = document.getElementById('orbitSpin');
-const nodeEls = [];
-nodes.forEach((n,i)=>{
-  const div = document.createElement('div');
-  div.className = 'orbit-node';
-  div.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round">${n.icon}</svg><span class="n-lbl">${n.label}</span>`;
-  spin.appendChild(div);
-  nodeEls.push(div);
-});
-
-function placeOrbitNodes(){
-  // radius based on the actual rendered size of the spin ring, so it
-  // never overflows narrow phone screens
-  const R = spin.offsetWidth / 2;
-  nodeEls.forEach((div,i)=>{
-    const angle = (i / nodeEls.length) * Math.PI * 2 - Math.PI/2;
-    const x = Math.cos(angle) * R;
-    const y = Math.sin(angle) * R;
-    div.style.transform = `translate(${x}px, ${y}px)`;
+function setupOrbit(spinId){
+  const spin = document.getElementById(spinId);
+  if(!spin) return null;
+  const nodeEls = [];
+  nodes.forEach((n)=>{
+    const div = document.createElement('div');
+    div.className = 'orbit-node';
+    div.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round">${n.icon}</svg><span class="n-lbl">${n.label}</span>`;
+    spin.appendChild(div);
+    nodeEls.push(div);
   });
+  function place(){
+    // radius based on the actual rendered size of the spin ring, so it
+    // never overflows narrow phone screens
+    const R = spin.offsetWidth / 2;
+    nodeEls.forEach((div,i)=>{
+      const angle = (i / nodeEls.length) * Math.PI * 2 - Math.PI/2;
+      const x = Math.cos(angle) * R;
+      const y = Math.sin(angle) * R;
+      div.style.transform = `translate(${x}px, ${y}px)`;
+    });
+  }
+  place();
+  return place;
 }
-placeOrbitNodes();
+const orbitPlacers = [setupOrbit('orbitSpin'), setupOrbit('orbitSpinEco')].filter(Boolean);
 let orbitResizeTimer;
 window.addEventListener('resize', ()=>{
   clearTimeout(orbitResizeTimer);
-  orbitResizeTimer = setTimeout(placeOrbitNodes, 150);
+  orbitResizeTimer = setTimeout(()=> orbitPlacers.forEach(p=>p()), 150);
 });
 
 // charts
